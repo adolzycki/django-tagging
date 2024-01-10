@@ -175,13 +175,18 @@ class TagManager(models.Manager):
         Passing a value for ``min_count`` implies ``counts=True``.
         """
         compiler = queryset.query.get_compiler(using=queryset.db)
-        where, params = compiler.compile(queryset.query.where)
+        params = []
+        try:
+            where, params = compiler.compile(queryset.query.where)
+            if where:
+                extra_criteria = 'AND %s' % where
+            else:
+                extra_criteria = ''
+        except FullResultSet:
+            extra_criteria = ''
+        
         extra_joins = ' '.join(compiler.get_from_clause()[0][1:])
 
-        if where:
-            extra_criteria = 'AND %s' % where
-        else:
-            extra_criteria = ''
         return self._get_usage(queryset.model, counts, min_count,
                                extra_joins, extra_criteria, params)
 
