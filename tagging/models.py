@@ -7,6 +7,7 @@ from django.db import connection
 from django.db import models
 from django.utils.encoding import smart_text
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import FullResultSet
 
 from tagging import settings
 from tagging.utils import LOGARITHMIC
